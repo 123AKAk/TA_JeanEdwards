@@ -12,19 +12,16 @@ namespace TA_JeanEdwards.Contract
         public string Genre { get; set; } = default!;
         public string Director { get; set; } = default!;
         public string Writer { get; set; } = default!;
-        public string[] Actors { get; set; } = default!;
+        public string Actors { get; set; } = default!;
         public string Plot { get; set; } = default!;
-        public string[] Language { get; set; } = default!;
-        public string[] Country { get; set; } = default!;
+        public string Language { get; set; } = default!;
+        public string Country { get; set; } = default!;
         public string Awards { get; set; } = default!;
         public string Poster { get; set; } = default!;
-        public RatingModel Ratings { get; set; } = default!;
+        public List<RatingModel> Ratings { get; set; } = default!;
         public string Metascore { get; set; } = default!;
-
-        [JsonPropertyName("imdbRating")]
         public string ImdbRating { get; set; } = default!;
 
-        [JsonPropertyName("imdbVotes")]
         public string ImdbVotes { get; set; } = default!;
 
         [JsonPropertyName("imdbID")]
