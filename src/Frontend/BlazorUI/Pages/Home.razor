@@ -1,0 +1,114 @@
+﻿@page "/"
+@attribute [StreamRendering(true)]
+
+<PageTitle>Search Movies</PageTitle>
+
+@if (Movies == null)
+{
+    @if (!string.IsNullOrEmpty(SearchValue))
+    {
+        <div class="d-flex align-items-center">
+            <strong>Searching...</strong>
+            <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+        </div>
+    }
+}
+else if (Movies.Search?.Any() == true)
+{
+    <div class="row">
+
+        @foreach (MovieModel movie in Movies.Search)
+        {
+            <div class="card movie_card m-5">
+                <img src="@movie.Poster" class="card-img-top" alt="@movie.Title">
+                <div class="card-body">
+                    <div class="movie-content">
+                        <div class="movie-content-header">
+                            <a href="@(_navigationManager.GetUriWithQueryParameters("/Details", new Dictionary<string, object?> { ["idmbId"] = movie.ImdbID }))">
+                                <h4 class="movie-title text-truncate">@movie.Title</h4>
+                            </a>
+                            <div class="imax-logo"></div>
+                        </div>
+                        <div class="movie-info">
+                            <div class="info-section">
+                                <label>Year</label>
+                                <span>@movie.Year</span>
+                            </div>
+                            <div class="info-section">
+                                <label>Type</label>
+                                <span>@movie.Type</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        }
+
+    </div>
+}
+else if (!string.IsNullOrEmpty(SearchValue))
+{
+    <div class="row justify-content-sm-center text-center">
+        <div class="col-sm-7 col-md-5">
+            <img class="img-fluid mb-5" src="/search-not-found.png" alt="Movie Not Found" />
+            <p class="card-text">Sorry, we couldn't find the movie you're looking for.</p>
+            <p class="card-text">Please check your search query and try again.</p>
+        </div>
+    </div>
+}
+
+
+
+@code {
+
+    private string? _searchValue;
+
+    [SupplyParameterFromQuery(Name = "s")]
+    private string? SearchValue
+    {
+        get => _searchValue;
+        set
+        {
+            if (_searchValue != value)
+            {
+                _searchValue = value;
+                _ = OnSearchValueChanged();
+            }
+        }
+    }
+
+    private bool errorOeccured;
+    public SearchModel? Movies;
+
+    private async Task OnSearchValueChanged()
+    {
+        Movies = null;
+
+        if (!string.IsNullOrEmpty(SearchValue))
+        {
+            try
+            {
+                await _searchHistory.UpdateHistoryAsync(SearchValue);
+                ServiceResponse<SearchModel> request = await _apiServices.Movie.Search(SearchValue);
+                if (request.IsSuccess)
+                {
+                    Movies = request.Result;
+                }
+            }
+            catch (ApiException apiEx)
+            {
+                Movies = new();
+            }
+            catch (Exception ex)
+            {
+                Movies = new();
+                errorOeccured = true;
+            }
+
+            StateHasChanged();
+        }
+    }
+
+}

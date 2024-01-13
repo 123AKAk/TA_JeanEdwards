@@ -1,0 +1,168 @@
+﻿@page "/Details"
+
+<PageTitle>Detail</PageTitle>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            @if (!isDataLoaded)
+            {
+                <div class="ad-flyer-313 ad-container h-50 skeleton-loading"></div>
+                <div class="card mt-4">
+                    <div class="card-body h-50 skeleton-loading"></div>
+                </div>
+            }
+            else
+            {
+                <div class="ad-flyer-313 ad-container">
+                    <img src="@Movie?.Poster" />
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+
+
+                        <h3>@Movie?.Title</h3>
+                        <span class="fs-5 fw-semibold text-muted">@Movie?.Plot</span>
+
+                        <div class="mt-4">
+                            <p class="text-muted fw-bold mb-2">Writer</p>
+                            <span>@Movie?.Writer</span>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="text-muted fw-bold mb-2">Actors</p>
+                            <span>@Movie?.Actors</span>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="text-muted fw-bold mb-2">Director</p>
+                            <span>@Movie?.Director</span>
+                        </div>
+
+
+                        @if (Movie?.Ratings.Count() > 0)
+                        {
+                            <div class="mt-4">
+                                <p class="text-muted fw-bold mb-3">Ratings</p>
+                                <div class="row">
+                                    @foreach (RatingModel rating in Movie.Ratings)
+                                    {
+                                        <div class="col-md-6">
+                                            <div class="mb-3 me-3">
+                                                <span>@rating?.Source :</span> @rating?.Value
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+
+                        <div class="mt-4">
+                            <p class="text-muted fw-bold mb-2">Website</p>
+                            <a href="@Movie?.Website" target="_blank">@Movie?.Website</a>
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+
+        </div>
+
+        <div class="col-lg-4 mt-5 mt-lg-0 d-block pl-xs-0 pl-lg-5">
+
+            @if (!isDataLoaded)
+            {
+                <div class="ad-applied skeleton-loading">
+                    <div class="ad-applied__item">
+                        <div class="ad-applied__item__inner text-center">
+                        </div>
+                        <div class="ad-applied__item__inner text-center m-auto">
+                            <h5 class="mb-0"><i class="bi bi-clipboard-check mr-2"></i></h5>
+                            <p style="font-size: 12px;"></p>
+                        </div>
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                <div class="ad-applied">
+                    <div class="ad-applied__item">
+                        <div class="ad-applied__item__inner text-center">
+                            <h5 class="mb-0"><i class="bi bi-clipboard-check mr-2"></i> @Movie?.ImdbVotes</h5>
+                            <p style="font-size: 12px;">Imdb Votes</p>
+                        </div>
+                        <div class="ad-applied__item__inner text-center m-auto">
+                            <h5 class="mb-0">@Movie?.ImdbRating<i class="fa fa-star small mx-1"></i></h5>
+                            <p style="font-size: 12px;">Imdb Ratings</p>
+                        </div>
+                    </div>
+
+                </div>
+            }
+
+            <div class="ad-description__list">
+                @foreach (var property in new[]
+                {
+                ("Imdb ID", Movie?.ImdbID),("Type", Movie?.Type), ("Genre", Movie?.Genre), ("Rated", Movie?.Rated), ("Metascore", Movie?.Metascore),
+                ("Box Office", Movie?.BoxOffice), ("DVD", Movie?.DVD), ("Year", Movie?.Year), ("Production", Movie?.Production), ("Released", Movie?.Released),("Runtime", Movie?.Runtime),
+                ("Language", Movie?.Language), ("Country", Movie?.Country), ("Awards", Movie?.Awards)
+                })
+                {
+                    <div class="ad-description__list__item @(isDataLoaded ? "" : "skeleton-loading")">
+                        <span class="ad-description__item__title">@(isDataLoaded ? property.Item1 : "")</span>
+                        <span>@property.Item2</span>
+                    </div>
+                }
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+@code {
+
+    [SupplyParameterFromQuery]
+    public string? IdmbId { get; set; }
+
+    public MovieModel? Movie { get; set; }
+
+    private bool isDataLoaded;
+
+    protected async override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (!string.IsNullOrEmpty(IdmbId))
+            {
+                try
+                {
+                    ServiceResponse<MovieModel> request = await _apiServices.Movie.GetById(IdmbId);
+                    if (request.IsSuccess)
+                    {
+                        Movie = request.Result;
+                        isDataLoaded = true;
+                    }
+                }
+                catch (ApiException apiEx)
+                {
+                    Movie = new();
+                }
+                catch (Exception ex)
+                {
+                    Movie = new();
+                }
+
+                StateHasChanged();
+            }
+        }
+    }
+
+}
