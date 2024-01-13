@@ -17,6 +17,6 @@ namespace TA_JeanEdwards.API.Services
             Movie = RestService.For<IMovie>(_client, _settings);
         }
 
-        public IMovie Movie { get; set; }
+        public virtual IMovie Movie { get; set; }
     }
 }

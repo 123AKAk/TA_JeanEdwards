@@ -4,7 +4,7 @@ using TA_JeanEdwards.API.Services;
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
-builder.Services.AddSingleton<ApiKeyHandler>();
+builder.Services.AddTransient<ApiKeyHandler>();
 builder.Services.AddHttpClient(ApiService.HTTP_CLIENT_KEY, cfg =>
 {
     cfg.BaseAddress = new Uri(builder.Configuration.GetSection("ApiUrl").Value!);

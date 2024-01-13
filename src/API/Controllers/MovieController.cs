@@ -23,8 +23,8 @@ namespace TA_JeanEdwards.API.Controllers
         {
             try
             {
-                MoviesModel result = await _apiService.Movie.Search(searchTerm);
-                if (result is null || !result.Response)
+                SearchModel result = await _apiService.Movie.Search(searchTerm);
+                if (result is null || result.Response is false)
                 {
                     _response.IsSuccess = false;
                     _response.Message = "Movie with title not found";
@@ -33,6 +33,8 @@ namespace TA_JeanEdwards.API.Controllers
 
                 _response.IsSuccess = true;
                 _response.Result = result;
+                return Ok(_response);
+
             }
             catch (ApiException apiEx)
             {
@@ -46,7 +48,7 @@ namespace TA_JeanEdwards.API.Controllers
                 _response.Message = ex.Message;
             }
 
-            return Ok(_response);
+            return BadRequest(_response);
         }
 
         [HttpGet]
@@ -56,7 +58,7 @@ namespace TA_JeanEdwards.API.Controllers
             try
             {
                 MovieModel result = await _apiService.Movie.GetById(imdbId);
-                if (result is null || !result.Response)
+                if (result is null || result.Response is false)
                 {
                     _response.IsSuccess = false;
                     _response.Message = $"Movie with imdb id \"{imdbId}\" not found";
@@ -65,6 +67,7 @@ namespace TA_JeanEdwards.API.Controllers
 
                 _response.IsSuccess = true;
                 _response.Result = result;
+                return Ok(_response);
             }
             catch (ApiException apiEx)
             {
@@ -78,7 +81,7 @@ namespace TA_JeanEdwards.API.Controllers
                 _response.Message = ex.Message;
             }
 
-            return Ok();
+            return BadRequest(_response);
         }
     }
 }
