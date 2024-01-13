@@ -1,1 +1,9 @@
 global using NUnit.Framework;
+global using FakeItEasy;
+global using Shouldly;
+global using TA_JeanEdwards.API.Services;
+global using TA_JeanEdwards.API.Services.Abstracts;
+global using TA_JeanEdwards.Contract;
+global using Microsoft.AspNetCore.Mvc;
+global using System.Net;
+global using TA_JeanEdwards.API.Controllers;
