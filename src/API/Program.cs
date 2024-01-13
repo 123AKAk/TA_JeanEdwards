@@ -1,21 +1,34 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.OpenApi.Models;
+using TA_JeanEdwards.API.Services;
 
-// Add services to the container.
-
+WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+builder.Services.AddTransient<ApiKeyHandler>();
+builder.Services.AddHttpClient(ApiService.HTTP_CLIENT_KEY, cfg =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    cfg.BaseAddress = new Uri(builder.Configuration.GetSection("ApiUrl").Value!);
+}).SetHandlerLifetime(TimeSpan.FromMinutes(15))
+  .AddHttpMessageHandler<ApiKeyHandler>();
 
+builder.Services.AddScoped<ApiService>();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1",
+        new OpenApiInfo
+        {
+            Title = "OMDb API Mediator",
+            Version = "v1.1",
+            Description = "Using http://www.omdbapi.com service API",
+            Contact = new OpenApiContact() { Name = "Kyree Henry", Email = "ene.henry.eh@gmail.com" }
+        });
+});
+
+WebApplication? app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

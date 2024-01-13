@@ -1,0 +1,61 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <main>
+        <div class="top-row px-4">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-11">
+                        <SearchBox @bind-Value="@SearchValue" OnSearch="@(() => OnSearch(SearchValue))" />
+                    </div>
+                    <div class="col-12 mt-4 text-center">
+                        @if (_searchHistory.searchHistory != null && _searchHistory.searchHistory.Count > 0)
+                        {
+                            @foreach (var item in _searchHistory.searchHistory)
+                            {
+                                <span class="badge p-2 bg-dark me-4 m-1 mx-0 px-4 pe-4 position-relative">
+                                    <a href="javascript:;" onclick="@(() => OnSearch(item))">@item</a>
+                                    <a href="javascript:;" onclick="@(() => _searchHistory.RemoveEntryAsync(item))" class="circle bg-white text-danger badge position-absolute" style="top: -5px;right: -4px;">X</a>
+                                </span>
+                            }
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+
+    [SupplyParameterFromQuery(Name = "s")]
+    private string? SearchValue { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _searchHistory.OnChange += StateHasChanged;
+        await _searchHistory.LoadSearchHistoryAsync();
+    }
+
+    public void OnSearch(string? value)
+    {
+        _navigationManager.NavigateTo($"/?s={value}");
+    }
+
+    public void Dispose()
+    {
+        _searchHistory.OnChange -= StateHasChanged;
+    }
+
+}

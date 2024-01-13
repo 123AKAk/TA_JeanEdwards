@@ -1,10 +1,20 @@
-using BlazorUI.Components;
+using Blazored.LocalStorage;
+using TA_JeanEdwards.BlazorUI.Pages;
+using TA_JeanEdwards.BlazorUI.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<SearchHistoryService>();
+builder.Services.AddHttpClient(ApiService.HTTP_CLIENT_KEY, cfg =>
+{
+    cfg.BaseAddress = new Uri(builder.Configuration.GetSection("ApiUrl").Value!);
+}).SetHandlerLifetime(TimeSpan.FromMinutes(15));
+builder.Services.AddScoped<ApiService>();
 
 var app = builder.Build();
 

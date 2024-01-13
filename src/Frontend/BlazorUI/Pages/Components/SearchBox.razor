@@ -1,0 +1,32 @@
+﻿@inherits InputBase<string>
+
+<div class="searchbar">
+    <input id="searchbox" class="search_input" type="text" value="@this.CurrentValueAsString" onkeydown="@HandleKeyPress" oninput="@SetValue" placeholder="Search..." />
+    <a href="javascript:void(0)" onclick="@OnSearch" class="search_icon"><i class="fas fa-search"></i></a>
+</div>
+
+@code {
+
+    [Parameter] public EventCallback OnSearch { get; set; }
+
+    protected void SetValue(ChangeEventArgs args)
+    {
+        this.CurrentValueAsString = args.Value?.ToString() ?? null;
+    }
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await OnSearch.InvokeAsync(e);
+        }
+    }
+
+    protected override bool TryParseValueFromString(string? value, out string? result, out string? validationErrorMessage)
+    {
+        result = value;
+        validationErrorMessage = null;
+        return true;
+    }
+
+}

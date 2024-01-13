@@ -1,10 +1,66 @@
-html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+body {
+    font-family: Inter,Helvetica,sans-serif;
 }
 
-a, .btn-link {
-    color: #006bb7;
+.top-row {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 100px;
+    background: #e74c3c !important;
 }
+
+.searchbar {
+    margin-bottom: auto;
+    margin-top: auto;
+    /*height: 60px;*/
+    background-color: #353b48;
+    border-radius: 30px;
+    padding: 10px;
+}
+
+.search_input {
+    color: white;
+    border: 0;
+    outline: 0;
+    background: none;
+    width: 80%;
+    padding: 0 10px;
+    line-height: 40px;
+    transition: width 0.4s linear;
+}
+
+@media (min-width: 641px) {
+
+    .search_input {
+        width: 90%;
+    }
+}
+
+.search_icon {
+    height: 40px;
+    width: 40px;
+    float: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color: white;
+    background: white;
+    color: #e74c3c;
+    text-decoration: none !important;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+    a:hover {
+        color: #6ABCEA;
+    }
+
 
 .btn-primary {
     color: #fff;
@@ -12,8 +68,71 @@ a, .btn-link {
     border-color: #1861ac;
 }
 
+.info-section label {
+    display: block;
+    color: rgba(0, 0, 0, 0.5);
+    margin-bottom: .5em;
+    font-size: 9px;
+}
+
+.info-section:first-of-type {
+    text-align: left;
+}
+
+.info-section:last-of-type {
+    text-align: right;
+}
+
+.info-section {
+    display: table-cell;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.movie-content {
+    padding: 18px 18px 24px 18px;
+    margin: 0;
+}
+
+.movie-info {
+    display: table;
+    width: 100%;
+}
+
+
+.info-section span {
+    font-weight: 700;
+    font-size: 11px;
+}
+
+
+.movie_card {
+    padding: 0 !important;
+    width: 22rem;
+    height: auto;
+    margin: 14px;
+    border-radius: 10px;
+    box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.2), 0 4px 15px 0 rgba(0, 0, 0, 0.19);
+}
+
+    .movie_card img {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        height: 16rem;
+    }
+
+.movie_info {
+    color: #5e5c5c;
+}
+
+    .movie_info i {
+        font-size: 20px;
+    }
+
+
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
